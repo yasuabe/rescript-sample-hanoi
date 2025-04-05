@@ -2,7 +2,8 @@
 
 import * as Hanoi from "./Hanoi.res.mjs";
 import * as React from "react";
-import * as Belt_List from "rescript/lib/es6/belt_List.js";
+import * as Config from "./Config.res.mjs";
+import * as Core__List from "@rescript/core/src/Core__List.res.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
 function App(props) {
@@ -12,19 +13,19 @@ function App(props) {
   var setCurrentState = match[1];
   var currentState = match[0];
   var movesRef = React.useRef(function () {
-        return Hanoi.solve(3, "A", "C", "B");
+        return Hanoi.solve(Config.disc_num, 0, 2, 1);
       });
   var indexRef = React.useRef(0);
   React.useEffect((function () {
           var id = {
             contents: setInterval((function () {
                     
-                  }), 1000)
+                  }), 2000)
           };
           id.contents = setInterval((function () {
                   var i = indexRef.current;
                   var moves = movesRef.current();
-                  var move = Belt_List.get(moves, i);
+                  var move = Core__List.get(moves, i);
                   if (move !== undefined) {
                     setCurrentState(function (state) {
                           return Hanoi.applyMove(state, move);
@@ -33,7 +34,7 @@ function App(props) {
                   } else {
                     clearInterval(id.contents);
                   }
-                }), 1000);
+                }), 400);
           return (function () {
                     clearInterval(id.contents);
                   });
@@ -49,7 +50,7 @@ function App(props) {
   return JsxRuntime.jsxs("div", {
               children: [
                 JsxRuntime.jsx("h1", {
-                      children: "What is this about?",
+                      children: "Tower of Hanoi",
                       className: "text-3xl font-semibold"
                     }),
                 JsxRuntime.jsx("canvas", {

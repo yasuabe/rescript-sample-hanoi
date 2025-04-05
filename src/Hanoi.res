@@ -7,32 +7,25 @@ type disc  = int
 type rod   = list<disc>
 type state = (rod, rod, rod)
 
-let initState: state = (list{1, 2, 3}, list{}, list{})
+let initState: state = (Belt.List.makeBy(Config.disc_num, i => i + 1), list{}, list{})
 
-let fromRods = ((a, b, c): state) => list{a, b, c}
-let toRods   = (rods: list<rod>) => switch rods {
+let fromState = ((a, b, c): state) => list{a, b, c}
+let toState   = (rods: list<rod>) => switch rods {
   | list{a, b, c} => (a, b, c)
   | _             => assert(false)
 }
 
-let getRod = ((a, b, c), (id: string)) =>
-  switch id {
-  | "A" => a
-  | "B" => b
-  | "C" => c
-  | _   => assert(false)
-  }
+let getRod = (state, (id: int)) =>
+  state -> fromState -> List.getExn(id)
 
-let setRod = ((a, b, c), id: string, newRod: rod) =>
-  switch id {
-  | "A" => (newRod, b, c)
-  | "B" => (a, newRod, c)
-  | "C" => (a, b, newRod)
-  | _   => assert(false)
-  }
+let setRod = (state: state, id: int, newRod: rod) => {
+  let arr = state -> fromState -> List.toArray
+  arr -> Belt.Array.setExn(id, newRod)
+  arr -> List.fromArray -> toState
+}
 
 // Solve / Move --------------
-let rec solve = (n: int, from: string, to_: string, aux: string): list<(string, string)> =>
+let rec solve = (n: int, from: int, to_: int, aux: int): list<(int, int)> =>
   if n > 0 {
     [
       solve(n - 1, from, aux, to_),
@@ -41,13 +34,13 @@ let rec solve = (n: int, from: string, to_: string, aux: string): list<(string, 
     ] -> List.concatMany
   } else { list{} }
 
-let applyMove = (state: state, (fromId, toId): (string, string)): state => {
+let applyMove = (state: state, (fromId, toId): (int, int)): state => {
   let fromRod = state -> getRod(fromId)
   let toRod   = state -> getRod(toId)
 
   state
-    -> setRod(fromId, fromRod->List.tailExn)
-    -> setRod(toId  , list{ fromRod->List.headExn, ...toRod })
+  -> setRod(fromId, fromRod->List.tailExn)
+  -> setRod(toId  , list{ fromRod->List.headExn, ...toRod })
 }
 
 // Draw ---------------
@@ -63,10 +56,10 @@ let drawDisc = (ctx: Canvas2d.t, x: float, y: float, size: int) => {
 }
 
 let drawRod = (ctx: Canvas2d.t, height: float) => (x: float) => {
-    let (sty, value) = reifyStyle("#990")
-    ctx -> setFillStyle(sty, value)
-    ctx -> fillRect(~x = x, ~y = 50.0, ~w = 10.0, ~h = height -. 70.0)
-  }
+  let (sty, value) = reifyStyle("#900")
+  ctx -> setFillStyle(sty, value)
+  ctx -> fillRect(~x = x, ~y = 50.0, ~w = 10.0, ~h = height -. 70.0)
+}
 
 let drawRods = (ctx: Canvas2d.t, height: float, xs: list<float>) =>
   xs -> List.forEach(drawRod(ctx, height))
@@ -76,7 +69,7 @@ let drawDiscs = (ctx: Canvas2d.t, height: float, rodX: list<float>, state: state
   let discHeight = 20.0
 
   state
-  -> fromRods
+  -> fromState
   -> List.zip(rodX)
   -> List.forEach(((rod, x)) => 
     rod
