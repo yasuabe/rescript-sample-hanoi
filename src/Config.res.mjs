@@ -3,7 +3,10 @@
 
 var disc_num = 4;
 
+var interval = 500;
+
 export {
   disc_num ,
+  interval ,
 }
 /* No side effect */

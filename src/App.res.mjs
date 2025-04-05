@@ -6,47 +6,58 @@ import * as Config from "./Config.res.mjs";
 import * as Core__List from "@rescript/core/src/Core__List.res.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 
-function App(props) {
-  var match = React.useState(function () {
-        return Hanoi.initState;
-      });
-  var setCurrentState = match[1];
-  var currentState = match[0];
-  var movesRef = React.useRef(function () {
-        return Hanoi.solve(Config.disc_num, 0, 2, 1);
-      });
+function useCanvasDraw(state) {
+  React.useEffect((function () {
+          var canvas = document.getElementById("canvas_id");
+          if (!(canvas == null)) {
+            console.log(state);
+            Hanoi.draw(state, canvas);
+          }
+          
+        }), [state]);
+}
+
+function useAutoPlay(setState, moves) {
   var indexRef = React.useRef(0);
   React.useEffect((function () {
           var id = {
             contents: setInterval((function () {
                     
-                  }), 2000)
+                  }), Math.imul(Config.interval, 3))
           };
           id.contents = setInterval((function () {
                   var i = indexRef.current;
-                  var moves = movesRef.current();
-                  var move = Core__List.get(moves, i);
+                  var moves$1 = moves();
+                  var move = Core__List.get(moves$1, i);
                   if (move !== undefined) {
-                    setCurrentState(function (state) {
+                    setState(function (state) {
                           return Hanoi.applyMove(state, move);
                         });
                     indexRef.current = i + 1 | 0;
                   } else {
                     clearInterval(id.contents);
                   }
-                }), 400);
+                }), Config.interval);
           return (function () {
                     clearInterval(id.contents);
                   });
         }), []);
-  React.useEffect((function () {
-          var canvas = document.getElementById("canvas_id");
-          if (!(canvas == null)) {
-            console.log(currentState);
-            Hanoi.draw(currentState, canvas);
-          }
-          
-        }), [currentState]);
+}
+
+function useHanoiPlayer() {
+  var match = React.useState(function () {
+        return Hanoi.initState;
+      });
+  var movesRef = React.useRef(function () {
+        return Hanoi.solve(Config.disc_num, 0, 2, 1);
+      });
+  useAutoPlay(match[1], movesRef.current);
+  return match[0];
+}
+
+function App(props) {
+  var currentState = useHanoiPlayer();
+  useCanvasDraw(currentState);
   return JsxRuntime.jsxs("div", {
               children: [
                 JsxRuntime.jsx("h1", {

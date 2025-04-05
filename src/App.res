@@ -1,37 +1,50 @@
 open Hanoi
 
-@react.component
-let make = () => {
-  let (currentState, setCurrentState) = React.useState(() => initState)
-  let movesRef = React.useRef(() => solve(Config.disc_num, 0, 2, 1))
+let useCanvasDraw = (~state: state) => {
+  React.useEffect1(() => {
+    switch (Webapi.Dom.document->Webapi.Dom.Document.getElementById("canvas_id")) {
+    | Some(canvas) =>
+        Js.Console.log(state)
+        draw(state, canvas)
+    | None => ()
+    }
+    None
+  }, [state])
+  }
+
+let useAutoPlay = (~setState: (state => state) => unit, ~moves: unit => list<(int, int)>) => {
   let indexRef = React.useRef(0)
 
   React.useEffect1(() => {
-    let id = ref(Js.Global.setInterval(() => (), 2000))
+    let id = ref(Js.Global.setInterval(() => (), Config.interval * 3))
 
     id.contents = Js.Global.setInterval(() => {
       let i     = indexRef.current
-      let moves = movesRef.current()
+      let moves = moves()
       switch List.get(moves, i) {
       | Some(move) => {
-          setCurrentState(state => applyMove(state, move))
+          setState(state => applyMove(state, move))
           indexRef.current = i + 1
         }
       | None => Js.Global.clearInterval(id.contents)
       }
-    }, 400)
+    }, Config.interval)
     Some(() => Js.Global.clearInterval(id.contents))
   }, [])
+}
 
-  React.useEffect1(() => {
-    switch (Webapi.Dom.document->Webapi.Dom.Document.getElementById("canvas_id")) {
-    | Some(canvas) =>
-        Js.Console.log(currentState)
-        draw(currentState, canvas)
-    | None => ()
-    }
-    None
-  }, [currentState])
+let useHanoiPlayer = () => {
+  let (state, setState) = React.useState(() => initState)
+  let movesRef = React.useRef(() => solve(Config.disc_num, 0, 2, 1))
+
+  useAutoPlay(~setState = setState, ~moves = movesRef.current)
+  (state)
+}
+
+@react.component
+let make = () => {
+  let currentState = useHanoiPlayer()
+  useCanvasDraw(~state = currentState)
 
   <div className="p-6">
     <h1 className="text-3xl font-semibold"> {"Tower of Hanoi"->React.string} </h1>
