@@ -3,6 +3,7 @@
 import * as Config from "./Config.res.mjs";
 import * as Belt_List from "rescript/lib/es6/belt_List.js";
 import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
+import * as Caml_int32 from "rescript/lib/es6/caml_int32.js";
 import * as Core__List from "@rescript/core/src/Core__List.res.mjs";
 import * as Webapi__Canvas__Canvas2d from "rescript-webapi/src/Webapi/Canvas/Webapi__Canvas__Canvas2d.res.mjs";
 
@@ -94,7 +95,7 @@ function applyMove(state, param) {
 
 function drawRod(ctx, height) {
   return function (x) {
-    var match = Webapi__Canvas__Canvas2d.reifyStyle("#900");
+    var match = Webapi__Canvas__Canvas2d.reifyStyle(Config.rod_color);
     ctx.fillStyle = match[1];
     ctx.fillRect(x, 50.0, 10.0, height - 70.0);
   };
@@ -128,9 +129,9 @@ function draw(state, canvas) {
           var x = param[1];
           Core__List.forEachWithIndex(Core__List.reverse(param[0]), (function (size, i) {
                   var y = baseY - i * 20.0;
-                  var width = 20.0 + size * 20.0;
+                  var width = 20 + Caml_int32.div(Math.imul(size, 60), Config.disc_num) | 0;
                   var x$p = x - width / 2.0;
-                  var match = Webapi__Canvas__Canvas2d.reifyStyle("teal");
+                  var match = Webapi__Canvas__Canvas2d.reifyStyle(Config.disc_color);
                   ctx.fillStyle = match[1];
                   ctx.fillRect(x$p, y, width, 20.0);
                 }));

@@ -45,18 +45,18 @@ let applyMove = (state: state, (fromId, toId): (int, int)): state => {
 
 // Draw ---------------
 let drawDisc = (ctx: Canvas2d.t, x: float, y: float, size: int) => {
-  let width  = 20.0 +. (float_of_int(size) *. 20.0)
+  let width  = float_of_int(20 + size * 60 / Config.disc_num)
   let height = 20.0
 
   let x'           = x -. (width /. 2.0)
-  let (sty, value) = reifyStyle("teal")
+  let (sty, value) = reifyStyle(Config.disc_color)
 
   ctx -> setFillStyle(sty, value)
   ctx -> fillRect(~x = x', ~y = y, ~w = width, ~h = height)
 }
 
 let drawRod = (ctx: Canvas2d.t, height: float) => (x: float) => {
-  let (sty, value) = reifyStyle("#900")
+  let (sty, value) = reifyStyle(Config.rod_color)
   ctx -> setFillStyle(sty, value)
   ctx -> fillRect(~x = x, ~y = 50.0, ~w = 10.0, ~h = height -. 70.0)
 }

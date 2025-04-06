@@ -3,7 +3,9 @@
 ## Overview
 - A trial project for ReScript. Explored its usability using the *Tower of Hanoi* as a subject.
 - Moves discs every specified interval on initial display or reload.
-- The execution time and the number of discs are set in Config.res.
+- [Hanoi.res](https://github.com/yasuabe/rescript-sample-hanoi/blob/main/src/Hanoi.res): Model, solution, operation, rendering
+- [App.res](https://github.com/yasuabe/rescript-sample-hanoi/blob/main/src/App.res): Handling timer events, integration with React, etc.
+- [Config.res](https://github.com/yasuabe/rescript-sample-hanoi/blob/main/src/Config.res): The time interval, number of disks, and other settings.
 
 ## Technologies Used
 - ReScript
