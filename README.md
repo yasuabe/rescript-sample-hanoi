@@ -1,40 +1,32 @@
-# ReScript / Vite Starter Template
+# Tower of Hanoi / ReScript
 
-- [Installation](../../README.md)
+## Overview
+- A trial project for ReScript. Explored its usability using the *Tower of Hanoi* as a subject.
+- Moves discs every specified interval on initial display or reload.
+- The execution time and the number of discs are set in Config.res.
 
-This is a Vite-based template with following setup:
+## Technologies Used
+- ReScript
+- rescript-webapi
+  - Used for drawing on &lt;canvas>
 
-- [ReScript](https://rescript-lang.org) 11.0 with @rescript/react, [Core](https://github.com/rescript-association/rescript-core) and JSX v4
-- ES6 modules (ReScript code compiled to `.res.mjs` files)
-- Vite 4 with React Plugin (Fast Refresh)
-- Tailwind 3
+## How to Run
 
-## Development
+1.  Install npm.
+2.  Run `npm run dev`. (Run `npm run res:dev` during development as well.)
+3.  Check http://localhost:5173/ in your browser.
 
-Run ReScript in dev mode:
+## Notes
+- Vibe Coding
+  - Attempted Vibe Coding using ChatGPT for environment setup and coding.
+  - The generated code tended towards procedural style, deviating from a functional programming approach.
+  - Encountered several challenges, including compilation errors and unexpected behavior.
+  - Personally, the process of debugging and refactoring proved to be a valuable learning experience.
+  - Future advancements in training data and model improvements may lead to more sophisticated Vibe Coding capabilities.
+  - Prompts were primarily in English.
+- ReScript itself doesn't feel very functional. It gives the impression of a typed JavaScript that can be written a bit like OCaml.
+- I tried to add tests, but build issues prevented me from testing, so I skipped it.
 
-```sh
-npm run res:dev
-```
-
-In another tab, run the Vite dev server:
-
-```sh
-npm run dev
-```
-
-## Tips
-
-### Fast Refresh & ReScript
-
-Make sure to create interface files (`.resi`) for each `*.res` file.
-
-Fast Refresh requires you to **only export React components**, and it's easy to unintenionally export other values that will disable Fast Refresh (you will see a message in the browser console whenever this happens).
-
-### Why are the generated `.res.mjs` files tracked in git?
-
-In ReScript, it's a good habit to keep track of the actual JS output the compiler emits. It allows quick sanity checking if we made any changes that actually have an impact on the resulting JS code (especially when doing major compiler upgrades, it's a good way to verify if production code will behave the same way as before the upgrade).
-
-This will also make it easier for your Non-ReScript coworkers to read and understand the changes in Github PRs, and call you out when you are writing inefficient code.
-
-If you want to opt-out, feel free to remove all compiled `.res.mjs` files within the `src` directory and add `src/**/*.res.mjs` in your `.gitignore`.
+## References
+- [rescript-lang.org](https://rescript-lang.org/)
+- [wikipedia: Tower of Hanoi](https://en.wikipedia.org/wiki/Tower_of_Hanoi)
